@@ -1,20 +1,21 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
+
 
 const books = ref([
   {
     id: 1,
-    cover: "https://m.media-amazon.com/images/I/7153D5oFumL._AC_UF1000,1000_QL80_.jpg",
-    title: "Lua Nova",
-    subject: "Stephenie Meyer",
-    preco: "34.90",
-  },
-  {
-    id: 2,
     cover: "https://m.media-amazon.com/images/I/618fXbK+OkL._AC_UF1000,1000_QL80_.jpg",
     title: "Crepúsculo",
     subject: "Stephenie Meyer",
     preco: "39.90",
+  },
+  {
+    id: 2,
+    cover: "https://m.media-amazon.com/images/I/7153D5oFumL._AC_UF1000,1000_QL80_.jpg",
+    title: "Lua Nova",
+    subject: "Stephenie Meyer",
+    preco: "34.90",
   },
   {
     id: 3,
@@ -25,28 +26,98 @@ const books = ref([
   },
   {
     id: 4,
+    cover: "https://m.media-amazon.com/images/I/51+ljDi72mL._AC_UF1000,1000_QL80_.jpg",
+    title: "Amanhecer",
+    subject: "Stephenie Meyer",
+    preco: "65.99",
+  },
+  {
+    id: 5,
+    cover: "https://m.media-amazon.com/images/I/815mbcFisDL.jpg",
+    title: "Sol da meia-noite",
+    subject: "Stephenie Meyer",
+    preco: "70.99",
+  },
+  {
+    id: 6,
     cover: "https://m.media-amazon.com/images/I/81ql6xkkliL._AC_UF1000,1000_QL80_.jpg",
     title: "A Seleção",
     subject: "Kiera Cass",
     preco: "40.99",
   },
   {
-    id: 5,
+    id: 7,
     cover: "https://m.media-amazon.com/images/I/91ILPH1tDSL.jpg",
     title: "A Elite",
     subject: "Kiera Cass",
     preco: "45.99",
   },
   {
-    id: 6,
+    id: 8,
     cover: "https://m.media-amazon.com/images/I/81htmSSRhXL.jpg",
     title: "A Escolha",
     subject: "Kiera Cass",
     preco: "49.99",
   },
-  
-  
+  {
+    id: 9,
+    cover: "https://m.media-amazon.com/images/I/91EEn1ZVw+L._UF894,1000_QL80_.jpg",
+    title: "Corrupt",
+    subject: "Penelope Douglas",
+    preco: "79.99",
+  },
+  {
+    id: 10,
+    cover: "https://m.media-amazon.com/images/I/91Iym6-6xML._UF894,1000_QL80_.jpg",
+    title: "Hideaway ",
+    subject: "Penelope Douglas",
+    preco: "89.99",
+  },
+  {
+    id: 11,
+    cover: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXYnaVE0hzobDui_AAfu1Fnk9sh8P_pDesOg&s",
+    title: "Kill switch ",
+    subject: "Penelope Douglas",
+    preco: "89.99",
+  },
+  {
+    id: 12,
+    cover: "https://m.media-amazon.com/images/I/71QbHTPna7L._UF894,1000_QL80_.jpg",
+    title: "Nightfall ",
+    subject: "Penelope Douglas",
+    preco: "89.99",
+  },
+  {
+    id: 13,
+    cover: "https://m.media-amazon.com/images/I/81TjnGG0g7L.jpg",
+    title: "De sangue e cinzas ",
+    subject: "Jennifer L.",
+    preco: "59.99",
+  },
+  {
+    id: 14,
+    cover: "https://m.media-amazon.com/images/I/91SDZ2eUj+L.jpg",
+    title: "Verity",
+    subject: "Collen Hoover",
+    preco: "59.99",
+  },
+  {
+    id: 15,
+    cover: "https://m.media-amazon.com/images/I/71Xta4Nf7uL._AC_UF1000,1000_QL80_.jpg",
+    title: "Orgulho e Preconceito",
+    subject: "Jane Austen",
+    preco: "69.99",
+  },
 ]);
+
+
+const searchQuery = ref("");
+
+
+const filteredBooks = computed(() => {
+  const query = searchQuery.value.toLowerCase();
+  return books.value.filter(book => book.title.toLowerCase().includes(query));
+});
 
 const carrinho = reactive([]);
 const mostrarCarrinho = ref(false);
@@ -62,7 +133,7 @@ function adicionarAoCarrinho(book) {
       <h1>BeckAnd books</h1>
 
       <div class="barrapesquisa">
-        <input type="text" placeholder="Pesquisar livros..." />
+        <input type="text" placeholder="Pesquisar livros..." v-model="searchQuery" />
         <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
       </div>
 
@@ -113,7 +184,7 @@ function adicionarAoCarrinho(book) {
         <h3>Lançamentos</h3>
         <article class="books">
           <ul>
-            <li v-for="book in books" :key="book.id">
+            <li v-for="book in filteredBooks" :key="book.id">
               <h2>{{ book.title }}</h2>
               <img :src="book.cover" alt="Capa do livro" width="120" />
               <p>{{ book.subject }}</p>
@@ -170,7 +241,6 @@ function adicionarAoCarrinho(book) {
     <p>© Alguns direitos reservados. IFbooks 2025.</p>
   </footer>
 </template>
-
 
 <style scoped>
 :root {
