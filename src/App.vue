@@ -4,7 +4,7 @@ import { ref, reactive } from "vue";
 const books = ref([
   {
     id: 1,
-    cover: "https://via.placeholder.com/120x180",
+    cover: "",
     title: "Lua Nova",
     subject: "Romance",
     preco: "34.90",
@@ -150,20 +150,6 @@ function adicionarAoCarrinho(book) {
 
 
 <style scoped>
-:root {
-  --azul-claro: #e0f0ff;
-  --azul: #0077cc;
-  --azul-escuro: #003366;
-  --texto: #1a1a1a;
-  --fundo: #f8faff;
-}
-
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 
 body {
   font-family: "Segoe UI", sans-serif;
@@ -289,12 +275,14 @@ button:hover {
   background-color: #003366;
 }
 
+
 div[v-else] {
   background-color: white;
   padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
+
 
 footer {
   background-color:#003366;
@@ -321,4 +309,4 @@ footer hr {
   background-color: white;
   opacity: 0.2;
 }
-</style>
+</style> 
