@@ -36,10 +36,10 @@ function adicionarAoCarrinho(book) {
 <template>
   <header>
     <nav>
-      <h1>IFbooks</h1>
-      <p>Apreço à leitura</p>
+      <h1>BeckAnd books</h1>
 
       <div class="barrapesquisa">
+        <input type="text" placeholder="Pesquisar livros..." />
         <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
       </div>
 
@@ -61,49 +61,52 @@ function adicionarAoCarrinho(book) {
   </header>
 
   <main>
-    <section>
-      <p>Autor de abril</p>
-      <h2>Stephenie Meyer</h2>
-      <p>
-        Stephenie Meyer é a autora da série Crepúsculo, que vendeu mais de 100
-        milhões de cópias em mais de 50 países e foi traduzida para 37 línguas.
-      </p>
-      <button>Acessar página do livro</button>
-    </section>
+    <template v-if="!mostrarCarrinho">
+      <section>
+        <p>Autor de abril</p>
+        <h2>Stephenie Meyer</h2>
+        <p>
+          Stephenie Meyer é a autora da série Crepúsculo, que vendeu mais de 100
+          milhões de cópias em mais de 50 países e foi traduzida para 37 línguas.
+        </p>
+        <button>Acessar página do livro</button>
+      </section>
 
-    <section>
-      <ul>
-        <li>
-          <i class="fa-solid fa-truck"></i> Frete grátis para SC
-        </li>
-        <li>
-          <i class="fa-solid fa-star"></i> Livros recomendados
-        </li>
-        <li>
-          <i class="fa-solid fa-book-open"></i> Mais vendidos
-        </li>
-      </ul>
-    </section>
-
-    <section>
-      <h3>Lançamentos</h3>
-
-      <article v-if="!mostrarCarrinho" class="books">
+      <section>
         <ul>
-          <li v-for="book in books" :key="book.id">
-            <h2>{{ book.title }}</h2>
-            <img :src="book.cover" alt="Capa do livro" width="120" />
-            <p>{{ book.subject }}</p>
-            <p>Preço: R$ {{ book.preco }}</p>
-            <button @click="adicionarAoCarrinho(book)">
-              Adicionar ao Carrinho
-            </button>
+          <li>
+            <i class="fa-solid fa-truck"></i> Frete grátis para SC
+          </li>
+          <li>
+            <i class="fa-solid fa-star"></i> Livros recomendados
+          </li>
+          <li>
+            <i class="fa-solid fa-book-open"></i> Mais vendidos
           </li>
         </ul>
-      </article>
+      </section>
 
-      <div v-else>
-        <h2>🛍 Seu Carrinho</h2>
+      <section>
+        <h3>Lançamentos</h3>
+        <article class="books">
+          <ul>
+            <li v-for="book in books" :key="book.id">
+              <h2>{{ book.title }}</h2>
+              <img :src="book.cover" alt="Capa do livro" width="120" />
+              <p>{{ book.subject }}</p>
+              <p>Preço: R$ {{ book.preco }}</p>
+              <button @click="adicionarAoCarrinho(book)">
+                Adicionar ao Carrinho
+              </button>
+            </li>
+          </ul>
+        </article>
+      </section>
+    </template>
+
+    <template v-else>
+      <section>
+        <h2>Seu Carrinho</h2>
         <div v-if="carrinho.length === 0">
           <p>O carrinho está vazio.</p>
         </div>
@@ -113,8 +116,8 @@ function adicionarAoCarrinho(book) {
           </li>
         </ul>
         <button @click="mostrarCarrinho = false">⬅ Voltar</button>
-      </div>
-    </section>
+      </section>
+    </template>
   </main>
 
   <footer>
@@ -144,6 +147,7 @@ function adicionarAoCarrinho(book) {
     <p>© Alguns direitos reservados. IFbooks 2025.</p>
   </footer>
 </template>
+
 
 <style scoped>
 :root {
@@ -175,6 +179,24 @@ header {
   flex-direction: column;
   gap: 0.5rem;
 }
+
+.barrapesquisa {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.barrapesquisa input {
+  border: none;
+  outline: none;
+  flex-grow: 1;
+  font-size: 1rem;
+}
+
 
 nav {
   display: flex;
@@ -252,7 +274,7 @@ section p {
   margin-bottom: 0.5rem;
 }
 
-/* Botões */
+
 button {
   background-color: #003366;
   color: white;
@@ -267,7 +289,6 @@ button:hover {
   background-color: #003366;
 }
 
-/* Carrinho */
 div[v-else] {
   background-color: white;
   padding: 1.5rem;
@@ -275,7 +296,6 @@ div[v-else] {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* FOOTER */
 footer {
   background-color:#003366;
   color: white;
