@@ -4,25 +4,48 @@ import { ref, reactive } from "vue";
 const books = ref([
   {
     id: 1,
-    cover: "https://via.placeholder.com/120x180",
+    cover: "https://m.media-amazon.com/images/I/7153D5oFumL._AC_UF1000,1000_QL80_.jpg",
     title: "Lua Nova",
-    subject: "Romance",
+    subject: "Stephenie Meyer",
     preco: "34.90",
   },
   {
     id: 2,
-    cover: "https://via.placeholder.com/120x180",
+    cover: "https://m.media-amazon.com/images/I/618fXbK+OkL._AC_UF1000,1000_QL80_.jpg",
     title: "Crepúsculo",
-    subject: "Fantasia",
+    subject: "Stephenie Meyer",
     preco: "39.90",
   },
   {
     id: 3,
-    cover: "https://via.placeholder.com/120x180",
+    cover: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQn8HMVXm56_FdqLrorhnR27uV3RMlyebvgYw&s",
     title: "Eclipse",
-    subject: "Aventura",
+    subject: "Stephenie Meyer",
     preco: "42.00",
   },
+  {
+    id: 4,
+    cover: "https://m.media-amazon.com/images/I/81ql6xkkliL._AC_UF1000,1000_QL80_.jpg",
+    title: "A Seleção",
+    subject: "Kiera Cass",
+    preco: "40.99",
+  },
+  {
+    id: 5,
+    cover: "https://m.media-amazon.com/images/I/91ILPH1tDSL.jpg",
+    title: "A Elite",
+    subject: "Kiera Cass",
+    preco: "45.99",
+  },
+  {
+    id: 6,
+    cover: "https://m.media-amazon.com/images/I/81htmSSRhXL.jpg",
+    title: "A Escolha",
+    subject: "Kiera Cass",
+    preco: "49.99",
+  },
+  
+  
 ]);
 
 const carrinho = reactive([]);
