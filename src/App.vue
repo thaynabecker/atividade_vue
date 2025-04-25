@@ -1,6 +1,5 @@
-
 <script setup>
-import { ref, computed} from 'vue'
+import { ref, computed } from 'vue'
 
 const books = ref([
   {
@@ -69,28 +68,28 @@ const books = ref([
   {
     id: 10,
     cover: "https://m.media-amazon.com/images/I/91Iym6-6xML._UF894,1000_QL80_.jpg",
-    title: "Hideaway ",
+    title: "Hideaway",
     subject: "Penelope Douglas",
     preco: "89.99",
   },
   {
     id: 11,
     cover: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXYnaVE0hzobDui_AAfu1Fnk9sh8P_pDesOg&s",
-    title: "Kill switch ",
+    title: "Kill switch",
     subject: "Penelope Douglas",
     preco: "89.99",
   },
   {
     id: 12,
     cover: "https://m.media-amazon.com/images/I/71QbHTPna7L._UF894,1000_QL80_.jpg",
-    title: "Nightfall ",
+    title: "Nightfall",
     subject: "Penelope Douglas",
     preco: "89.99",
   },
   {
     id: 13,
     cover: "https://m.media-amazon.com/images/I/81TjnGG0g7L.jpg",
-    title: "De sangue e cinzas ",
+    title: "De sangue e cinzas",
     subject: "Jennifer L.",
     preco: "59.99",
   },
@@ -109,16 +108,15 @@ const books = ref([
     preco: "69.99",
   },
 ]);
+
 const termoBusca = ref('');
-const contadorFavoritos = ref(0);
+const favoritos = ref([]);
+const mostrandoFavoritos = ref(false);
 
 const adicionarAoCarrinho = (book) => {
   alert(`"${book.title}" adicionado ao carrinho!`);
 };
 
-const navigateToBookPage = () => {
-  window.location.href = "#livros";
-};
 
 const filteredBooks = computed(() => {
   return books.value.filter((book) =>
@@ -127,46 +125,56 @@ const filteredBooks = computed(() => {
   );
 });
 
+const toggleFavorito = (book) => {
+  const index = favoritos.value.findIndex(fav => fav.id === book.id);
+  if (index === -1) {
+    favoritos.value.push(book); // Adiciona aos favoritos
+  } else {
+    favoritos.value.splice(index, 1); // Remove dos favoritos
+  }
+};
+
+const mostrarFavoritos = () => {
+  mostrandoFavoritos.value = true; // Ao clicar no coração, exibe os favoritos
+};
+
+
 </script>
 
 <template>
   <header>
-  <div class="menu">
-    <nav>
-      <ul class="antes-barra">
-        <li><a href="#beckand" class="logo">BeckAnd books</a></li>
-        <li class="barrinha"></li>
-        <li class="slogan">
-          Aprecie a <br />
-          Leitura
-        </li>
-      </ul>
-      <div class="barra-pesquisa">
-        <input type="text" v-model="termoBusca" placeholder="Pesquisar" />
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </div>
-      <ul class="apos-barra">
-        <li><a href="#termo">Termo</a></li>
-        <li><a href="#equipe">Equipe</a></li>
-        <li><a href="#envio">Envio</a></li>
-        <li><a href="#devolucoes">Devoluções</a></li>
-        <li class="icon-com-barra">
-          <a href="#carrinho"><i class="fa-solid fa-cart-shopping"></i></a>
-        </li>
-        <li class="icon-com-barra">
-          <a href="#favoritos">
-            <i class="fa-solid fa-heart"></i>
-            <span v-if="contadorFavoritos > 0" class="contador">{{ contadorFavoritos }}</span>
-          </a>
-        </li>
-        <li>
-          <a href="#perfil"><i class="fa-solid fa-user"></i></a>
-        </li>
-      </ul>
-    </nav>
-    <hr class="linha-azul" />
-  </div>
-</header>
+    <div class="menu">
+      <nav>
+        <ul class="antes-barra">
+          <li><a href="#beckand" class="logo">BeckAnd books</a></li>
+          <li class="barrinha"></li>
+          <li class="slogan">Aprecie a <br />Leitura</li>
+        </ul>
+        <div class="barra-pesquisa">
+          <input type="text" v-model="termoBusca" placeholder="Pesquisar" />
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <ul class="apos-barra">
+          <li><a href="#termo">Termo</a></li>
+          <li><a href="#equipe">Equipe</a></li>
+          <li><a href="#envio">Envio</a></li>
+          <li><a href="#devolucoes">Devoluções</a></li>
+          <li class="icon-com-barra">
+            <a href="#carrinho"><i class="fa-solid fa-cart-shopping"></i></a>
+          </li>
+          <li class="icon-com-barra">
+            <a href="#favoritos" @click="mostrarFavoritos">
+              <i class="fa-solid fa-heart"></i>
+              <span v-if="favoritos.length > 0" class="contador">{{ favoritos.length }}</span>
+            </a>
+          </li>
+          <li><a href="#perfil"><i class="fa-solid fa-user"></i></a></li>
+        </ul>
+      </nav>
+      <hr class="linha-azul" />
+    </div>
+  </header>
+
   <main>
     <section class="autor-abril">
       <div class="stephenie">
@@ -184,7 +192,8 @@ const filteredBooks = computed(() => {
         <img src="https://http2.mlstatic.com/D_NQ_NP_905909-MLU74246720895_012024-O.webp" alt="crepusculo" />
       </div>
     </section>
-    <section class="livros-section">
+
+    <section v-if="!mostrandoFavoritos" class="livros-section">
       <div class="botoes-informacoes">
         <div class="item-info">
           <i class="fas fa-truck"></i>
@@ -199,53 +208,43 @@ const filteredBooks = computed(() => {
           <span>Mais vendidos</span>
         </div>
       </div>
-      <article class="books">
-          <ul>
-            <li v-for="book in filteredBooks" :key="book.id">
-              <h2>{{ book.title }}</h2>
-              <img :src="book.cover" alt="Capa do livro" width="120" />
-              <p>{{ book.subject }}</p>
-              <p>Preço: R$ {{ book.preco }}</p>
-              <button @click="adicionarAoCarrinho(book)">
-                Adicionar ao Carrinho
-              </button>
-            </li>
-          </ul>
-        </article>
-      </section>
-  </main>
 
-  <footer class="rodape">
-    <div class="container-rodape">
-      <div class="redes-sociais">
-        <a href="index.html" class="logo">BeckAnd books</a>
-        <div class="icones">
-          <i class="fab fa-facebook"></i>
-          <i class="fab fa-instagram"></i>
-          <i class="fab fa-twitter"></i>
-        </div>
+      <article class="books">
+        <ul>
+          <li v-for="book in filteredBooks" :key="book.id">
+            <h2>{{ book.title }}</h2>
+            <img :src="book.cover" alt="Capa do livro" width="120" />
+            <p>{{ book.subject }}</p>
+            <p>Preço: R$ {{ book.preco }}</p>
+            <button @click="adicionarAoCarrinho(book)">
+              Adicionar ao Carrinho
+            </button>
+            <button @click="toggleFavorito(book)">
+  {{ favoritos.some(fav => fav.id === book.id) ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos' }}
+</button>
+          </li>
+        </ul>
+      </article>
+    </section>
+
+    <section v-if="mostrandoFavoritos" class="favoritos-section">
+      <h2>Seus Favoritos</h2>
+      <ul>
+        <li v-for="book in favoritos" :key="book.id">
+          <h3>{{ book.title }}</h3>
+          <img :src="book.cover" alt="Capa do livro" width="120" />
+          <p>{{ book.subject }}</p>
+          <p>Preço: R$ {{ book.preco }}</p>
+          <button @click="toggleFavorito(book)">
+            Remover dos Favoritos
+          </button>
+        </li>
+      </ul>
+      <div class="voltar-container">
+        <a href="index.html" class="voltar-btn">Voltar à Página Principal</a>
       </div>
-      <div class="contatos">
-        <p>Contatos</p>
-        <p><i class="fas fa-phone-alt"></i> </p>
-        <p><i class="fas fa-envelope"></i> beckandbooks@gmail.com</p>
-        <div class="pagamento">
-          <img src="https://i.ibb.co/ccfhYRbJ/paipal-1.png" alt="PayPal" class="icone-cartao" />
-          <img
-            src="https://i.ibb.co/ybp3bbW/Master-Card-Logo-1979-1.png"
-            alt="Mastercard"
-            class="icone-cartao"
-          />
-          <img
-            src="https://i.ibb.co/bgpdtpx0/VISA-card-logo-1.png"
-            alt="Visa"
-            class="icone-cartao"
-          />
-      </div>
-    </div>
-    <hr class="linha-divisoria" />
-    <p class="copyright">© Alguns direitos reservados | BeckAnd 2025</p>
-  </footer>
+    </section>
+  </main>
 </template>
 
 <style scoped>
@@ -277,7 +276,7 @@ body {
 }
 
 .autor-abril div.stephenie {
-  margin: ;
+  margin: 0;
   margin: 0 5vw;
   width: 45%;
 }
@@ -521,15 +520,12 @@ nav ul li a {
   text-align: center;
   padding: 1rem;
   border-radius: 12px;
-  background-color: #f7f9fb;
+
   transition: transform 0.2s ease-in-out;
-  border: 1px solid #e0e0e0;
+
 }
 
-.books li:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 12px rgba(0, 51, 102, 0.1);
-}
+
 
 .books h2 {
   font-size: 1.1rem;
@@ -558,7 +554,125 @@ nav ul li a {
 .books button:hover {
   background-color: #002244;
 }
+.favoritos-section {
+  padding: 20px;
+  background-color: #f4f4f9;
+  border-radius: 8px;
+  margin-top: 20px;
+}
 
+.favoritos-section h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.favoritos-section ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  list-style-type: none;
+  padding: 0;
+}
+
+.favoritos-section li {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.favoritos-section li:hover {
+  transform: translateY(-5px);
+}
+
+.favoritos-section li img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.favoritos-section li h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.favoritos-section li p {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.favoritos-section li button {
+  background-color: #003366;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.favoritos-section li button:hover {
+  background-color: #003366;
+}
+
+.favoritos-section li button:focus {
+  outline: none;
+}
+/* Estilo para o botão de voltar */
+.voltar-container {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.voltar-btn {
+  background-color: #003366;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 1.2rem;
+  display: inline-block;
+  transition: background-color 0.3s;
+}
+button {
+  background-color: #003366;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #002244;
+}
+
+button:focus {
+  outline: none;
+}
+
+.voltar-btn:hover {
+  background-color:#003366;
+}
+
+.voltar-btn:focus {
+  outline: none;
+}
 
 .rodape {
   margin: 10vw 0 0 0;
