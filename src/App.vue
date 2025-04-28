@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue'
 
+
+const paginaAtual = ref('inicio'); 
 const books = ref([
   {
     id: 1,
@@ -112,11 +114,22 @@ const books = ref([
 const termoBusca = ref('');
 const favoritos = ref([]);
 const mostrandoFavoritos = ref(false);
+const carrinho = ref([]);
+const mostrandoCarrinho = ref(false);
 
-const adicionarAoCarrinho = (book) => {
-  alert(`"${book.title}" adicionado ao carrinho!`);
+
+const toggleCarrinho = (book) => {
+  const index = carrinho.value.findIndex(car => car.id === book.id);
+  if (index === -1) {
+    carrinho.value.push(book);
+  } else {
+    carrinho.value.splice(index, 1);
+  }
 };
 
+const mostrarCarrinho = () => {
+  mostrandoCarrinho.value = true;
+};
 
 const filteredBooks = computed(() => {
   return books.value.filter((book) =>
@@ -128,16 +141,19 @@ const filteredBooks = computed(() => {
 const toggleFavorito = (book) => {
   const index = favoritos.value.findIndex(fav => fav.id === book.id);
   if (index === -1) {
-    favoritos.value.push(book); // Adiciona aos favoritos
+    favoritos.value.push(book);
   } else {
-    favoritos.value.splice(index, 1); // Remove dos favoritos
+    favoritos.value.splice(index, 1);
   }
 };
 
 const mostrarFavoritos = () => {
-  mostrandoFavoritos.value = true; // Ao clicar no coração, exibe os favoritos
+  mostrandoFavoritos.value = true;
 };
 
+const acessarPaginaAutor = () => {
+  paginaAtual.value = 'autor'; 
+};
 
 </script>
 
@@ -160,7 +176,10 @@ const mostrarFavoritos = () => {
           <li><a href="#envio">Envio</a></li>
           <li><a href="#devolucoes">Devoluções</a></li>
           <li class="icon-com-barra">
-            <a href="#carrinho"><i class="fa-solid fa-cart-shopping"></i></a>
+            <a href="#carrinho">
+              <i class="fa-solid fa-cart-shopping"></i>
+              <span v-if="carrinho.length > 0" class="contador">{{ carrinho.length }}</span>
+            </a>
           </li>
           <li class="icon-com-barra">
             <a href="#favoritos" @click="mostrarFavoritos">
@@ -176,22 +195,27 @@ const mostrarFavoritos = () => {
   </header>
 
   <main>
-    <section class="autor-abril">
+    <section v-if="paginaAtual === 'inicio'" class="autor-abril">
       <div class="stephenie">
         <div>
           <p><span>Autora de Abril</span></p>
         </div>
         <h1>Stephenie Meyer</h1>
         <p>
-          Stephenie Meyer é a autora da série Crepúsculo, que vendeu mais de 100
-          milhões de cópias em mais de 50 países e foi traduzida para 37 línguas.
+          Stephenie Meyer é a autora da série Crepúsculo, que vendeu mais de 100 milhões de cópias em mais de 50 países e foi traduzida para 37 línguas.
         </p>
-        <button @click="navigateToBookPage">Acessar página do livro</button>
+        <button @click="acessarPaginaAutor">Acessar página do autor</button>
       </div>
       <div class="img">
-        <img src="https://http2.mlstatic.com/D_NQ_NP_905909-MLU74246720895_012024-O.webp" alt="crepusculo" />
+        <img src="https://http2.mlstatic.com/D_NQ_NP_905909-MLU74246720895_012024-O.webp" alt="Stephenie Meyer" />
       </div>
     </section>
+
+      <section v-else-if="paginaAtual === 'autor'">
+    <h2>Sobre Stephenie Meyer</h2>
+    <p>Informações detalhadas sobre a autora...</p>
+    <button @click="paginaAtual = 'inicio'">Voltar à Página Principal</button>
+  </section>
 
     <section v-if="!mostrandoFavoritos" class="livros-section">
       <div class="botoes-informacoes">
@@ -215,18 +239,33 @@ const mostrarFavoritos = () => {
             <h2>{{ book.title }}</h2>
             <img :src="book.cover" alt="Capa do livro" width="120" />
             <p>{{ book.subject }}</p>
-            <p>Preço: R$ {{ book.preco }}</p>
-            <button @click="adicionarAoCarrinho(book)">
+            <p>{{ book.preco }}</p>
+            <button @click.prevent="toggleCarrinho(book)">
               Adicionar ao Carrinho
             </button>
-            <button @click="toggleFavorito(book)">
-  {{ favoritos.some(fav => fav.id === book.id) ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos' }}
-</button>
+            <a href="#" @click.prevent="toggleFavorito(book)">
+              <i class="fa-solid fa-heart"></i>
+            </a>
           </li>
         </ul>
       </article>
     </section>
-
+    <section v-if="mostrandoCarrinho" class="carrinho-section">
+      <h2>Carrinho</h2>
+      <ul>
+        <li v-for="book in carrinho" :key="book.id">
+          <h3>{{ book.title }}</h3>
+          <img :src="book.cover" alt="Capa do livro" width="120" />
+          <p>{{ book.subject }}</p>
+          <p>{{ book.preco }}</p>
+          <button @click="toggleCarrinho(book)">
+          </button>
+        </li>
+      </ul>
+      <div class="voltar-container">
+        <a href="index.html" class="voltar-btn">Voltar à Página Principal</a>
+      </div>
+    </section>
     <section v-if="mostrandoFavoritos" class="favoritos-section">
       <h2>Seus Favoritos</h2>
       <ul>
@@ -234,7 +273,7 @@ const mostrarFavoritos = () => {
           <h3>{{ book.title }}</h3>
           <img :src="book.cover" alt="Capa do livro" width="120" />
           <p>{{ book.subject }}</p>
-          <p>Preço: R$ {{ book.preco }}</p>
+          <p>{{ book.preco }}</p>
           <button @click="toggleFavorito(book)">
             Remover dos Favoritos
           </button>
@@ -245,6 +284,32 @@ const mostrarFavoritos = () => {
       </div>
     </section>
   </main>
+
+
+  <footer class="rodape">
+  <div class="container-rodape">
+    <div class="redes-sociais">
+      <a href="index.html" class="logo">BeckAnd books</a>
+      <div class="icones">
+        <i class="fab fa-facebook"></i>
+        <i class="fab fa-instagram"></i>
+        <i class="fab fa-twitter"></i>
+      </div>
+    </div>
+    <div class="contatos">
+      <p>Contatos</p>
+      <p><i class="fas fa-phone-alt"></i> </p>
+      <p><i class="fas fa-envelope"></i> beckandbooks@gmail.com</p>
+      <div class="pagamento">
+        <img src="https://i.ibb.co/ccfhYRbJ/paipal-1.png" alt="PayPal" class="icone-cartao" />
+        <img src="https://i.ibb.co/ybp3bbW/Master-Card-Logo-1979-1.png" alt="Mastercard" class="icone-cartao" />
+        <img src="https://i.ibb.co/bgpdtpx0/VISA-card-logo-1.png" alt="Visa" class="icone-cartao" />
+      </div>
+    </div>
+  </div>
+  <hr class="linha-divisoria" />
+  <p class="copyright">© Alguns direitos reservados | BeckAnd 2025</p>
+</footer>
 </template>
 
 <style scoped>
