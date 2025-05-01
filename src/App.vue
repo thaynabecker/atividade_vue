@@ -1,8 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 
-
-const paginaAtual = ref('inicio'); 
 const books = ref([
   {
     id: 1,
@@ -112,14 +110,6 @@ const books = ref([
 ]);
 
 const termoBusca = ref('');
-const favoritos = ref([]);
-const mostrandoFavoritos = ref(false);
-
-
-
-const adicionarAoCarrinho = (book) => {
-  alert(`"${book.title}" adicionado ao carrinho!`);
-};
 
 const filteredBooks = computed(() => {
   return books.value.filter((book) =>
@@ -128,22 +118,6 @@ const filteredBooks = computed(() => {
   );
 });
 
-const toggleFavorito = (book) => {
-  const index = favoritos.value.findIndex(fav => fav.id === book.id);
-  if (index === -1) {
-    favoritos.value.push(book);
-  } else {
-    favoritos.value.splice(index, 1);
-  }
-};
-
-const mostrarFavoritos = () => {
-  mostrandoFavoritos.value = true;
-};
-
-const acessarPaginaAutor = () => {
-  paginaAtual.value = 'autor'; 
-};
 
 </script>
 
@@ -165,13 +139,14 @@ const acessarPaginaAutor = () => {
           <li><a href="#equipe">Equipe</a></li>
           <li><a href="#envio">Envio</a></li>
           <li><a href="#devolucoes">Devoluções</a></li>
-          <li class="icon-com-barra">
-            <a href="#carrinho"><i class="fa-solid fa-cart-shopping"></i></a>
+          <li>
+            <a href="#carrinho">
+              <i class="fa-solid fa-cart-shopping"></i>
+            </a>
           </li>
-          <li class="icon-com-barra">
+          <li >
             <a href="#favoritos" @click="mostrarFavoritos">
               <i class="fa-solid fa-heart"></i>
-              <span v-if="favoritos.length > 0" class="contador">{{ favoritos.length }}</span>
             </a>
           </li>
           <li><a href="#perfil"><i class="fa-solid fa-user"></i></a></li>
@@ -182,7 +157,7 @@ const acessarPaginaAutor = () => {
   </header>
 
   <main>
-    <section v-if="paginaAtual === 'inicio'" class="autor-abril">
+    <section class="autor-abril">
       <div class="stephenie">
         <div>
           <p><span>Autora de Abril</span></p>
@@ -198,13 +173,7 @@ const acessarPaginaAutor = () => {
       </div>
     </section>
 
-      <section v-else-if="paginaAtual === 'autor'">
-    <h2>Sobre Stephenie Meyer</h2>
-    <p>Informações detalhadas sobre a autora...</p>
-    <button @click="paginaAtual = 'inicio'">Voltar à Página Principal</button>
-  </section>
-
-    <section v-if="!mostrandoFavoritos" class="livros-section">
+    <section class="livros-section">
       <div class="botoes-informacoes">
         <div class="item-info">
           <i class="fas fa-truck"></i>
@@ -227,37 +196,12 @@ const acessarPaginaAutor = () => {
             <img :src="book.cover" alt="Capa do livro" width="120" />
             <p>{{ book.subject }}</p>
             <p>Preço: R$ {{ book.preco }}</p>
-            <button @click="adicionarAoCarrinho(book)">
-              Adicionar ao Carrinho
-            </button>
-            <button @click="toggleFavorito(book)">
-              {{ favoritos.some(fav => fav.id === book.id) ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos' }}
-            </button>
           </li>
         </ul>
       </article>
     </section>
 
-    <section v-if="mostrandoFavoritos" class="favoritos-section">
-      <h2>Seus Favoritos</h2>
-      <ul>
-        <li v-for="book in favoritos" :key="book.id">
-          <h3>{{ book.title }}</h3>
-          <img :src="book.cover" alt="Capa do livro" width="120" />
-          <p>{{ book.subject }}</p>
-          <p>Preço: R$ {{ book.preco }}</p>
-          <button @click="toggleFavorito(book)">
-            Remover dos Favoritos
-          </button>
-        </li>
-      </ul>
-      <div class="voltar-container">
-        <a href="index.html" class="voltar-btn">Voltar à Página Principal</a>
-      </div>
-    </section>
   </main>
-
-
   <footer class="rodape">
   <div class="container-rodape">
     <div class="redes-sociais">
@@ -287,6 +231,12 @@ const acessarPaginaAutor = () => {
 <style scoped>
 body {
   font-family: 'Poppins', sans-serif;
+}
+.menu{
+  background-color: #fff;
+}
+main .autor-abril{
+  background-color: #fff;
 }
 .autor-abril {
   display: flex;
@@ -513,7 +463,7 @@ nav ul li a {
   display: flex;
   justify-content: space-around;
   padding: 32px 11vw;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #003366;
   background: #fff;
   font-weight: 700;
 }
@@ -590,125 +540,6 @@ nav ul li a {
 
 .books button:hover {
   background-color: #002244;
-}
-.favoritos-section {
-  padding: 20px;
-  background-color: #f4f4f9;
-  border-radius: 8px;
-  margin-top: 20px;
-}
-
-.favoritos-section h2 {
-  font-size: 2rem;
-  font-weight: bold;
-  text-align: center;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.favoritos-section ul {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  list-style-type: none;
-  padding: 0;
-}
-
-.favoritos-section li {
-  background-color: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-}
-
-.favoritos-section li:hover {
-  transform: translateY(-5px);
-}
-
-.favoritos-section li img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 5px;
-  margin-bottom: 15px;
-}
-
-.favoritos-section li h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.favoritos-section li p {
-  font-size: 1rem;
-  color: #666;
-  margin-bottom: 10px;
-}
-
-.favoritos-section li button {
-  background-color: #003366;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.favoritos-section li button:hover {
-  background-color: #003366;
-}
-
-.favoritos-section li button:focus {
-  outline: none;
-}
-/* Estilo para o botão de voltar */
-.voltar-container {
-  text-align: center;
-  margin-top: 30px;
-}
-
-.voltar-btn {
-  background-color: #003366;
-  color: white;
-  padding: 12px 25px;
-  border-radius: 5px;
-  text-decoration: none;
-  font-size: 1.2rem;
-  display: inline-block;
-  transition: background-color 0.3s;
-}
-button {
-  background-color: #003366;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  font-size: 14px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #002244;
-}
-
-button:focus {
-  outline: none;
-}
-
-.voltar-btn:hover {
-  background-color:#003366;
-}
-
-.voltar-btn:focus {
-  outline: none;
 }
 
 .rodape {
@@ -789,4 +620,5 @@ button:focus {
   font-size: 12px;
   color: rgba(218, 208, 224, 0.726);
 }
+
 </style>
