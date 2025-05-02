@@ -1,249 +1,573 @@
 <script setup>
 import { ref, computed } from 'vue'
 
-const books = ref([
+const paginaAtual = ref('home')
+const carrinho = ref([])
+const favoritos = ref([])
+const livros = [
   {
     id: 1,
-    cover: "https://m.media-amazon.com/images/I/618fXbK+OkL._AC_UF1000,1000_QL80_.jpg",
-    title: "Crepúsculo",
-    subject: "Stephenie Meyer",
-    preco: "39.90",
+    imagem: 'https://m.media-amazon.com/images/I/618fXbK+OkL._AC_UF1000,1000_QL80_.jpg',
+    titulo: 'Crepúsculo',
+    autor: 'Stephenie Meyer',
+    preco: 39.99,
   },
   {
     id: 2,
-    cover: "https://m.media-amazon.com/images/I/7153D5oFumL._AC_UF1000,1000_QL80_.jpg",
-    title: "Lua Nova",
-    subject: "Stephenie Meyer",
-    preco: "34.90",
+    imagem: 'https://m.media-amazon.com/images/I/7153D5oFumL._AC_UF1000,1000_QL80_.jpg',
+    titulo: 'Lua Nova',
+    autor: 'Stephenie Meyer',
+    preco: 34.99,
   },
   {
     id: 3,
-    cover: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQn8HMVXm56_FdqLrorhnR27uV3RMlyebvgYw&s",
-    title: "Eclipse",
-    subject: "Stephenie Meyer",
-    preco: "42.00",
+    imagem:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQn8HMVXm56_FdqLrorhnR27uV3RMlyebvgYw&s',
+    titulo: 'Eclipse',
+    autor: 'Stephenie Meyer',
+    preco: 42.99,
   },
   {
     id: 4,
-    cover: "https://m.media-amazon.com/images/I/51+ljDi72mL._AC_UF1000,1000_QL80_.jpg",
-    title: "Amanhecer",
-    subject: "Stephenie Meyer",
-    preco: "65.99",
+    imagem: 'https://m.media-amazon.com/images/I/51+ljDi72mL._AC_UF1000,1000_QL80_.jpg',
+    titulo: 'Amanhecer',
+    autor: 'Stephenie Meyer',
+    preco: 65.99,
   },
   {
     id: 5,
-    cover: "https://m.media-amazon.com/images/I/815mbcFisDL.jpg",
-    title: "Sol da meia-noite",
-    subject: "Stephenie Meyer",
-    preco: "70.99",
+    imagem: 'https://m.media-amazon.com/images/I/815mbcFisDL.jpg',
+    titulo: 'Sol da meia noite',
+    autor: 'Stephenie Meyer',
+    preco: 70.99,
   },
   {
     id: 6,
-    cover: "https://m.media-amazon.com/images/I/81ql6xkkliL._AC_UF1000,1000_QL80_.jpg",
-    title: "A Seleção",
-    subject: "Kiera Cass",
-    preco: "40.99",
+    imagem: 'https://m.media-amazon.com/images/I/81ql6xkkliL._AC_UF1000,1000_QL80_.jpg',
+    titulo: 'A Seleção',
+    autor: 'Kiera Cass',
+    preco: 40.99,
   },
   {
     id: 7,
-    cover: "https://m.media-amazon.com/images/I/91ILPH1tDSL.jpg",
-    title: "A Elite",
-    subject: "Kiera Cass",
-    preco: "45.99",
+    imagem: 'https://m.media-amazon.com/images/I/91ILPH1tDSL.jpg',
+    titulo: 'A Elite',
+    autor: 'Kiera Cass',
+    preco: 45.99,
   },
   {
     id: 8,
-    cover: "https://m.media-amazon.com/images/I/81htmSSRhXL.jpg",
-    title: "A Escolha",
-    subject: "Kiera Cass",
-    preco: "49.99",
+    imagem: 'https://m.media-amazon.com/images/I/81htmSSRhXL.jpg',
+    titulo: 'A Escolha',
+    autor: 'Kiera Cass',
+    preco: 49.99,
   },
   {
     id: 9,
-    cover: "https://m.media-amazon.com/images/I/91EEn1ZVw+L._UF894,1000_QL80_.jpg",
-    title: "Corrupt",
-    subject: "Penelope Douglas",
-    preco: "79.99",
+    imagem: 'https://m.media-amazon.com/images/I/91EEn1ZVw+L._UF894,1000_QL80_.jpg',
+    titulo: 'Corrupt',
+    autor: 'Penelope Douglas',
+    preco: 79.99,
   },
   {
     id: 10,
-    cover: "https://m.media-amazon.com/images/I/91Iym6-6xML._UF894,1000_QL80_.jpg",
-    title: "Hideaway",
-    subject: "Penelope Douglas",
-    preco: "89.99",
+    imagem: 'https://m.media-amazon.com/images/I/91Iym6-6xML._UF894,1000_QL80_.jpg',
+    titulo: 'Hideaway',
+    autor: 'Penelope Douglas',
+    preco: 89.99,
   },
   {
     id: 11,
-    cover: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXYnaVE0hzobDui_AAfu1Fnk9sh8P_pDesOg&s",
-    title: "Kill switch",
-    subject: "Penelope Douglas",
-    preco: "89.99",
+    imagem:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXYnaVE0hzobDui_AAfu1Fnk9sh8P_pDesOg&s',
+    titulo: 'Kill switch',
+    autor: 'Penelope Douglas',
+    preco: 89.99,
   },
   {
     id: 12,
-    cover: "https://m.media-amazon.com/images/I/71QbHTPna7L._UF894,1000_QL80_.jpg",
-    title: "Nightfall",
-    subject: "Penelope Douglas",
-    preco: "89.99",
+    imagem: 'https://m.media-amazon.com/images/I/71QbHTPna7L._UF894,1000_QL80_.jpg',
+    titulo: 'Nightfall',
+    autor: 'Penelope Douglas',
+    preco: 89.99,
   },
-  {
-    id: 13,
-    cover: "https://m.media-amazon.com/images/I/81TjnGG0g7L.jpg",
-    title: "De sangue e cinzas",
-    subject: "Jennifer L.",
-    preco: "59.99",
-  },
-  {
-    id: 14,
-    cover: "https://m.media-amazon.com/images/I/91SDZ2eUj+L.jpg",
-    title: "Verity",
-    subject: "Collen Hoover",
-    preco: "59.99",
-  },
-  {
-    id: 15,
-    cover: "https://m.media-amazon.com/images/I/71Xta4Nf7uL._AC_UF1000,1000_QL80_.jpg",
-    title: "Orgulho e Preconceito",
-    subject: "Jane Austen",
-    preco: "69.99",
-  },
-]);
+]
 
-const termoBusca = ref('');
+const searchQuery = ref('')
 
 const filteredBooks = computed(() => {
-  return books.value.filter((book) =>
-    book.title.toLowerCase().includes(termoBusca.value.toLowerCase()) ||
-    book.subject.toLowerCase().includes(termoBusca.value.toLowerCase())
-  );
-});
+  const query = searchQuery.value.toLowerCase()
+  return livros.filter((book) => book.titulo.toLowerCase().includes(query))
+})
 
+function adicionarAoCarrinho(produto) {
+  const existente = carrinho.value.find((item) => item.id === produto.id)
+  if (existente) {
+    existente.quantidade += 1
+  } else {
+    carrinho.value.push({ ...produto, quantidade: 1 })
+  }
+}
 
+function removerDoCarrinho(id) {
+  carrinho.value = carrinho.value.filter((item) => item.id !== id)
+}
+
+function aumentarQuantidade(item) {
+  item.quantidade += 1
+}
+
+function diminuirQuantidade(item) {
+  if (item.quantidade > 1) {
+    item.quantidade -= 1
+  } else {
+    removerDoCarrinho(item)
+  }
+}
+
+const totalCarrinho = computed(() => {
+  return carrinho.value.reduce((total, item) => {
+    return total + item.preco * item.quantidade
+  }, 0)
+})
+
+const codigoCupom = ref('')
+const cupomAtivo = ref(false)
+const mensagemCupom = ref('')
+
+function aplicarCupom() {
+  const cupom = codigoCupom.value.toLowerCase()
+  if (cupom !== 'desconto10') {
+    mensagemCupom.value = 'Cupom inválido.'
+    return
+  }
+  if (cupomAtivo.value) {
+    mensagemCupom.value = 'Cupom já foi usado.'
+  } else {
+    cupomAtivo.value = true
+    mensagemCupom.value = 'Cupom aplicado com sucesso!'
+  }
+}
+
+const totalComDesconto = computed(() => {
+  return cupomAtivo.value ? totalCarrinho.value * 0.9 : totalCarrinho.value
+})
+
+function adicionarAosFavoritos(livro) {
+  const existe = favoritos.value.find((item) => item.id === livro.id)
+  if (!existe) {
+    favoritos.value.push(livro)
+  }
+}
+
+function removerDosFavoritos(id) {
+  favoritos.value = favoritos.value.filter((item) => item.id !== id)
+}
 </script>
 
 <template>
-  <header>
-    <div class="menu">
-      <nav>
-        <ul class="antes-barra">
-          <li><a href="#beckand" class="logo">BeckAnd books</a></li>
-          <li class="barrinha"></li>
-          <li class="slogan">Aprecie a <br />Leitura</li>
-        </ul>
-        <div class="barra-pesquisa">
-          <input type="text" v-model="termoBusca" placeholder="Pesquisar" />
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </div>
-        <ul class="apos-barra">
-          <li><a href="#termo">Termo</a></li>
-          <li><a href="#equipe">Equipe</a></li>
-          <li><a href="#envio">Envio</a></li>
-          <li><a href="#devolucoes">Devoluções</a></li>
-          <li>
-            <a href="#carrinho">
-              <i class="fa-solid fa-cart-shopping"></i>
-            </a>
-          </li>
-          <li >
-            <a href="#favoritos" @click="mostrarFavoritos">
-              <i class="fa-solid fa-heart"></i>
-            </a>
-          </li>
-          <li><a href="#perfil"><i class="fa-solid fa-user"></i></a></li>
-        </ul>
-      </nav>
-      <hr class="linha-azul" />
-    </div>
+  <header class="menu">
+    <nav>
+      <ul class="antes-barra">
+        <li><a href="index.html" class="logo">BeckAnd books</a></li>
+        <li class="barrinha"></li>
+        <li class="slogan">
+          Aprecie a <br />
+          Leitura
+        </li>
+      </ul>
+      <div class="barra-pesquisa">
+        <input type="text" placeholder="Pesquisar" v-model="searchQuery" />
+        <span class="material-icons">search</span>
+      </div>
+      <ul class="apos-barra">
+        <li><a href="#termo">Termo</a></li>
+        <li><a href="#equipe">Equipe</a></li>
+        <li><a href="#envio">Envio</a></li>
+        <li><a href="#devolucoes">Devoluções</a></li>
+        <li class="icon-com-barra">
+          <a href="#" @click.prevent="paginaAtual = 'carrinho'">
+            <span class="material-icons">shopping_cart</span>
+          </a>
+        </li>
+        <li class="icon-com-barra">
+          <a href="#" @click.prevent="paginaAtual = 'favoritos'"
+            ><span class="material-icons">favorite</span></a
+          >
+        </li>
+        <li>
+          <a href="#perfil"><span class="material-icons">person</span></a>
+        </li>
+      </ul>
+    </nav>
+    <div class="linha-azul"></div>
   </header>
 
   <main>
-    <section class="autor-abril">
-      <div class="stephenie">
-        <div>
-          <p><span>Autora de Abril</span></p>
+    <!--Página Inicial-->
+    <section v-if="paginaAtual === 'home'">
+      <section class="autor-abril" v-if="!searchQuery">
+        <div class="stephenie">
+          <div>
+            <p><span>Autora de Abril</span></p>
+          </div>
+          <h1>Stephenie Meyer</h1>
+          <p>
+            Stephenie Meyer é a autora da série Crepúsculo, que vendeu mais de 100 milhões de cópias
+            em mais de 50 países e foi traduzida para 37 línguas.
+          </p>
+          <button @click="adicionarAoCarrinho(livros[0])">Acessar página do livro</button>
         </div>
-        <h1>Stephenie Meyer</h1>
-        <p>
-          Stephenie Meyer é a autora da série Crepúsculo, que vendeu mais de 100 milhões de cópias em mais de 50 países e foi traduzida para 37 línguas.
-        </p>
-        <button @click="acessarPaginaAutor">Acessar página do autor</button>
-      </div>
-      <div class="img">
-        <img src="https://http2.mlstatic.com/D_NQ_NP_905909-MLU74246720895_012024-O.webp" alt="Stephenie Meyer" />
-      </div>
+        <div class="img">
+          <img
+            src="https://http2.mlstatic.com/D_NQ_NP_905909-MLU74246720895_012024-O.webp"
+            alt="Stephenie Meyer"
+          />
+        </div>
+      </section>
+
+      <section class="livros-section">
+        <div class="botoes-informacoes" v-if="!searchQuery">
+          <div class="item-info">
+            <span class="material-icons">local_shipping</span>
+            <span>Frete grátis para SC</span>
+          </div>
+          <div class="item-info">
+            <span class="material-icons">star</span>
+            <span>Livros recomendados</span>
+          </div>
+          <div class="item-info">
+            <span class="material-icons">import_contacts</span>
+            <span>Mais vendidos</span>
+          </div>
+        </div>
+
+        <div class="container">
+          <h2 class="titulo-secao">Lançamentos</h2>
+          <div v-if="filteredBooks.length === 0">
+            <p style="font-size: larger">Nenhum resultado encontrado.</p>
+          </div>
+          <div class="livros-grid">
+            <div v-for="livro in filteredBooks" :key="livro.id" class="card-livro">
+              <div class="livro-capa">
+                <img :src="livro.imagem" alt="Capa do livro" />
+              </div>
+              <h3 class="livro-titulo">{{ livro.titulo }}</h3>
+              <p class="livro-autor">{{ livro.autor }}</p>
+              <div class="preco-favorito">
+                <p class="livro-preco">R$ {{ livro.preco }}</p>
+                <span class="icone-coracao" @click="adicionarAosFavoritos(livro)"
+                  ><span class="far fa-heart"></span
+                ></span>
+              </div>
+              <div class="acoes">
+                <button class="btn-comprar" @click="adicionarAoCarrinho(livro)">
+                 <span class="material-icons">shopping_cart</span> Comprar
+                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </section>
-
-    <section class="livros-section">
-      <div class="botoes-informacoes">
-        <div class="item-info">
-          <i class="fas fa-truck"></i>
-          <span>Frete grátis para SC</span>
-        </div>
-        <div class="item-info">
-          <i class="fas fa-star"></i>
-          <span>Livros recomendados</span>
-        </div>
-        <div class="item-info">
-          <i class="fas fa-book"></i>
-          <span>Mais vendidos</span>
-        </div>
+    <!--CARRINHO-->
+    <section v-if="paginaAtual === 'carrinho'" class="pagina-carrinho">
+      <h1>Carrinho</h1>
+      <div v-if="carrinho.length === 0">
+        <p class= "vazio" >Seu carrinho está vazio.</p>
+        <button @click="paginaAtual = 'home'" class="btn-voltar">Voltar</button>
       </div>
 
-      <article class="books">
-        <ul>
-          <li v-for="book in filteredBooks" :key="book.id">
-            <h2>{{ book.title }}</h2>
-            <img :src="book.cover" alt="Capa do livro" width="120" />
-            <p>{{ book.subject }}</p>
-            <p>Preço: R$ {{ book.preco }}</p>
+      <div v-else>
+        <div class="titulos">
+          <h2>Título</h2>
+          <h2>Quantidade</h2>
+          <h2>Subtotal</h2>
+        </div>
+
+        <div v-for="item in carrinho" :key="item.id" class="item-carrinho">
+          <!--TÍTULO-->
+          <div class="coluna">
+            <img :src="item.imagem" alt="Capa do livro" class="imagem-livro-carrinho" />
+            <div>
+              <h3 class="titulo-livro">{{ item.titulo }}</h3>
+              <p class="autor-livro">{{ item.autor }}</p>
+              <p>
+                <span>R$ {{ item.preco.toFixed(2) }}</span>
+              </p>
+            </div>
+          </div>
+          <!--QUANTIDADE-->
+          <div class="coluna-qtd">
+            <div class="quantidade-area">
+              <button @click="diminuirQuantidade(item)" class="btn-quantidade">-</button>
+              <span>{{ item.quantidade }}</span>
+              <button @click="aumentarQuantidade(item)" class="btn-quantidade">+</button>
+            </div>
+            <button @click="removerDoCarrinho(item.id)" class="btn-remover">
+                <span class="fa-solid fa-trash-can"></span> Remover
+            </button>
+          </div>
+          <!--SUBTOTAL-->
+          <div class="coluna-preco">
+            <p>
+              <strong>R$ {{ (item.preco * item.quantidade).toFixed(2) }}</strong>
+            </p>
+          </div>
+        </div>
+        <button @click="paginaAtual = 'home'" class="btn-voltar">Voltar para loja</button>
+        <div class="cupom">
+          <input type="text" v-model="codigoCupom" placeholder="Código do cupom" />
+          <button @click="aplicarCupom">Inserir Cupom</button>
+        </div>
+        <p v-if="mensagemCupom">{{ mensagemCupom }}</p>
+        <ul class="total">
+          <li><strong>Total da Compra</strong></li>
+          <li class="line">
+            <p>Produtos:</p>
+            <p>R${{ totalCarrinho.toFixed(2) }}</p>
           </li>
+          <li class="line">
+            <p>Frete:</p>
+            <p>Grátis</p>
+          </li>
+          <li class="totalDesconto">
+            <p>Total:</p>
+            <p>R${{ totalCarrinho.toFixed(2) }}</p>
+          </li>
+          <li class="totalDesconto" v-if="totalComDesconto < totalCarrinho">
+            <p>Total com desconto:</p>
+            <p>R${{ totalComDesconto.toFixed(2) }}</p>
+          </li>
+          <button>Ir para o pagamento</button>
         </ul>
-      </article>
+      </div>
     </section>
-
+    <!-- Favoritos -->
+    <section class="favoritos" v-if="paginaAtual === 'favoritos'">
+      <h2>Meus Favoritos</h2>
+      <div v-if="favoritos.length === 0">
+        <p>Nenhum livro adicionado aos favoritos ainda.</p>
+      </div>
+      <ul v-else>
+        <li v-for="livro in favoritos" :key="livro.id">
+          <img :src="livro.imagem" alt="Capa" style="width: 100px" />
+          <div>{{ livro.titulo }} - {{ livro.autor }}</div>
+          <button @click="removerDosFavoritos(livro.id)" class="btn-remove">Remover dos Favoritos</button>
+        </li>
+      </ul>
+      <button @click="paginaAtual = 'home'" class="btn-voltar">Voltar</button>
+    </section>
   </main>
+  <!--RODAPÉ-->
   <footer class="rodape">
-  <div class="container-rodape">
-    <div class="redes-sociais">
-      <a href="index.html" class="logo">BeckAnd books</a>
-      <div class="icones">
-        <i class="fab fa-facebook"></i>
-        <i class="fab fa-instagram"></i>
-        <i class="fab fa-twitter"></i>
+    <div class="container-rodape">
+      <div class="redes-sociais">
+        <a href="index.html" class="logo">BeckAnd books</a>
+        <div class="icones">
+          <a href="#facebook"><span class="fab fa-facebook"></span></a>
+          <a href="#instagram"><span class="fab fa-instagram"></span></a>
+          <a href="#twitter"><span class="fab fa-twitter"></span></a>
+        </div>
+      </div>
+      <div class="contatos">
+        <p>Contatos</p>
+        <p><span class="fas fa-phone-alt"></span> +55 47 99999-9999</p>
+        <p><span class="fas fa-envelope"></span> beckandbooks@gmail.com</p>
+        <div class="pagamento">
+          <img src="https://i.ibb.co/ccfhYRbJ/paipal-1.png" alt="PayPal" class="icone-cartao" />
+          <img
+            src="https://i.ibb.co/ybp3bbW/Master-Card-Logo-1979-1.png"
+            alt="Mastercard"
+            class="icone-cartao"
+          />
+          <img
+            src="https://i.ibb.co/bgpdtpx0/VISA-card-logo-1.png"
+            alt="Visa"
+            class="icone-cartao"
+          />
+        </div>
       </div>
     </div>
-    <div class="contatos">
-      <p>Contatos</p>
-      <p><i class="fas fa-phone-alt"></i> </p>
-      <p><i class="fas fa-envelope"></i> beckandbooks@gmail.com</p>
-      <div class="pagamento">
-        <img src="https://i.ibb.co/ccfhYRbJ/paipal-1.png" alt="PayPal" class="icone-cartao" />
-        <img src="https://i.ibb.co/ybp3bbW/Master-Card-Logo-1979-1.png" alt="Mastercard" class="icone-cartao" />
-        <img src="https://i.ibb.co/bgpdtpx0/VISA-card-logo-1.png" alt="Visa" class="icone-cartao" />
-      </div>
-    </div>
-  </div>
-  <hr class="linha-divisoria" />
-  <p class="copyright">© Alguns direitos reservados | BeckAnd 2025</p>
-</footer>
+    <hr class="linha-divisoria" />
+    <p class="copyright">©️ Alguns direitos reservados | IFBooks 2025</p>
+  </footer>
 </template>
 
 <style scoped>
-body {
-  font-family: 'Poppins', sans-serif;
+/* Favoritos */
+.favoritos h2 {
+  font-size: 35px;
+  color: #003366;
+  margin: 0 0 0 5vw;
 }
-.menu{
+
+.favoritos p {
+  margin: 0 0 0 5vw;
+}
+.favoritos{
+    color: #003366;
+}
+.favoritos ul {
+  display: flex;
+  align-items: center;
+  margin: 2vw 0 0 0;
+}
+.favoritos ul li {
+  list-style: none;
+  margin: 0px 0 0 30px;
+}
+.btn-voltar{
+    margin: 2px 0 0 5vw;
+}
+.btn-remove{
+  background-color: #003366;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  margin: 0.5vw 0 0 0;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/*MENU*/
+header {
+  font-family: 'Roboto', sans-serif;
   background-color: #fff;
 }
-main .autor-abril{
-  background-color: #fff;
+
+main{
+    background-color: #fff;
+    min-height: calc(100vh - 200px); /* ajuste 200px conforme a altura do header e footer */
 }
+.icon-com-barra {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding-right: 5px;
+  margin-right: -10px;
+}
+.icon-com-barra::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  right: 0;
+  width: 1px;
+  height: 22px;
+  background-color: #003366;
+}
+.icon-com-barra a span,
+.apos-barra li a span {
+  color: #003366;
+}
+.apos-barra li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.apos-barra li a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  font-size: 15px;
+  padding: 0 10px;
+  color: #7a7881;
+}
+.apos-barra li a:hover {
+  color: #003366;
+}
+.barra-pesquisa {
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  padding: 3px 15px;
+  margin: 0.7vw 5vw 0 5vw;
+}
+.barra-pesquisa input {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #003366;
+  font-size: 14px;
+  padding: 5px 0 5px 0;
+  flex-grow: 1;
+}
+.barra-pesquisa span {
+  color: #003366;
+  font-size: 18px;
+  margin-left: 70px;
+  cursor: pointer;
+}
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin: 0.5vw 0 0 0;
+}
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+}
+nav ul li {
+  padding: 1rem 1rem 0 0;
+}
+nav ul li a {
+  text-decoration: none;
+}
+.logo {
+  font-size: 18px;
+  color: #231f2d;
+}
+.antes-barra {
+  align-items: center;
+  text-align: center;
+}
+.antes-barra li:first-child {
+  position: relative;
+}
+.antes-barra li:first-child::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  right: 6px;
+  width: 1px;
+  height: 35px;
+  background-color: #003366;
+}
+.slogan {
+  color: #003366;
+  font-size: 14px;
+  line-height: 1;
+  margin-left: -55px;
+}
+.apos-barra a {
+  color: #003366;
+}
+.linha-azul {
+  width: 100%;
+  height: 1px;
+  background-color: #003366;
+  margin-top: 15px;
+}
+
+/*AUTOR-ABRIL*/
 .autor-abril {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 5rem;
   padding: 4rem 2rem;
+  margin-bottom: 2px solid #003366;
+  font-family: 'Roboto', sans-serif;
 }
 .autor-abril .stephenie,
 .autor-abril .img {
@@ -257,17 +581,13 @@ main .autor-abril{
   font-size: xxx-large;
   color: #382c2c;
 }
-
 .autor-abril p {
   color: #4d4c4c;
 }
-
 .autor-abril div.stephenie {
-  margin: 0;
   margin: 0 5vw;
   width: 45%;
 }
-
 .autor-abril div.stephenie div {
   width: 130px;
   border: 2px solid #003366;
@@ -277,7 +597,6 @@ main .autor-abril{
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
 .autor-abril div.stephenie span {
   color: #003366;
 }
@@ -286,7 +605,7 @@ main .autor-abril{
   max-width: 500px;
 }
 .autor-abril button {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Roboto', sans-serif;
   background-color: #003366;
   color: white;
   border: none;
@@ -297,21 +616,17 @@ main .autor-abril{
   cursor: pointer;
   transition: background-color 0.3s;
 }
-
 .autor-abril button:hover {
-  background-color:#003366;
+  background-color: #003366;
 }
-
 .autor-abril div.img {
   margin: 0 5vw;
   width: 45%;
 }
-
 .autor-abril div.img img {
   width: 440px;
   height: auto;
 }
-
 .autor-abril div.img p {
   font-size: 15px;
   color: #4d4c4c;
@@ -319,159 +634,23 @@ main .autor-abril{
   text-align: right;
 }
 
-.icon-com-barra {
-  position: relative;
-  display: flex;
-  align-items: center;
-  height: 100%;
-  padding-right: 5px;
-  margin-right: -10px;
-}
-
-.icon-com-barra::after {
-  content: '';
-  position: absolute;
-  top: 10px;
-  right: 0;
-  width: 1px;
-  height: 22px;
-  background-color:#003366;
-}
-
-.icon-com-barra a i,
-.apos-barra li a i {
-  color: #003366;
-}
-
-.apos-barra li {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.apos-barra li a {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  font-size: 15px;
-  padding: 0 10px;
-  color: #7b7881;
-}
-
-.apos-barra li a:hover {
-  color: #003366;
-}
-
-.barra-pesquisa {
-  display: flex;
-  align-items: center;
-  background-color: #f0f0f0;
-  padding: 3px 15px;
-  margin: 0.7vw 5vw 0 5vw;
-}
-
-.barra-pesquisa input {
-  border: none;
-  outline: none;
-  background: transparent;
-  color: #003366;
-  font-size: 14px;
-  padding: 5px 0 5px 0;
-  flex-grow: 1;
-}
-
-.barra-pesquisa i {
-  color: #003366;
-  font-size: 18px;
-  margin-left: 70px;
-  cursor: pointer;
-}
-
-nav {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  margin: 0.5vw 0 0 0;
-}
-
-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  padding: 0;
-  margin: 0;
-}
-
-nav ul li {
-  padding: 1rem 1rem 0 0;
-}
-
-nav ul li a {
-  text-decoration: none;
-}
-
-.logo {
-  font-size: 18px;
-  color: #231f2d;
-}
-
-.antes-barra {
-  align-items: center;
-  text-align: center;
-}
-
-.antes-barra li:first-child {
-  position: relative;
-}
-
-.antes-barra li:first-child::after {
-  content: '';
-  position: absolute;
-  top: 10px;
-  right: 6px;
-  width: 1px;
-  height: 35px;
-  background-color: #003366;
-}
-
-
-.slogan {
-  color: #003366;
-  font-size: 14px;
-  line-height: 1;
-  margin-left: -55px;
-}
-
-.apos-barra a {
-  color: #003366;
-}
-
-.linha-azul {
-  width: 100%;
-  height: 1px;
-  background-color: #003366;
-  margin-top: 15px;
-}
-
+/*CONTEÚDO E LANÇAMENTOS*/
 .livros-section {
   background-color: #fff;
+  font-family: 'Roboto', sans-serif;
+  border-top: 2px solid #003366;
 }
-
 .botoes-informacoes {
   display: flex;
   justify-content: space-around;
   padding: 32px 11vw;
-  border-bottom: 1px solid #003366;
   background: #fff;
   font-weight: 700;
+  border-bottom: 2px solid #003366;
 }
-
 .botoes-informacoes span {
   font-weight: 600;
 }
-
 .item-info {
   display: flex;
   align-items: center;
@@ -480,73 +659,279 @@ nav ul li a {
   font-weight: 700;
   font-size: 16px;
 }
-
-.item-info i {
+.item-info span {
   font-size: 20px;
   font-weight: 700;
 }
-
-.books {
-  padding: 4rem 2rem;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+.titulo-secao {
+  font-size: 28px;
+  margin: 0 0 2vw 0;
+  font-weight: 600;
+}
+.livros-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  row-gap: 75px;
+}
+.card-livro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+.livro-capa img {
+  width: auto;
+  height: 240px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+.livro-titulo {
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: justify;
+}
+.livro-autor {
+  color: #555;
+  font-size: 13px;
+  text-align: justify;
+}
+.livro-preco {
+  margin: 8px 0 0 6.5vw;
+  font-weight: bold;
+  text-align: left;
+}
+.container h2{
+    color: #003366;
+}
+.container h3{
+    color: #003366;
+}
+.titulos{
+    color: #003366;
+}
+.livro-preco{
+    color: #003366;
+}
+.acoes {
   display: flex;
   justify-content: center;
+  align-items: center;
+  margin-top: 12px;
 }
-
-.books ul {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 2rem;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  max-width: 1100px;
+.preco-favorito {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 87%;
 }
-
-.books li {
-  text-align: center;
-  padding: 1rem;
-  border-radius: 12px;
-
-  transition: transform 0.2s ease-in-out;
-
-}
-
-
-
-.books h2 {
-  font-size: 1.1rem;
-  color: #003366;
-  margin: 0.5rem 0;
-}
-
-.books p {
-  color: #555;
-  margin: 0.25rem 0;
-  font-size: 0.95rem;
-}
-
-.books button {
-  margin-top: 0.5rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+.btn-comprar {
   background-color: #003366;
   color: white;
   border: none;
-  border-radius: 8px;
+  padding: 13px 80px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-comprar:hover {
+  background-color: #003366;
+}
+.icone-coracao {
+  font-size: 18px;
+  color: #003366;
+}
+/* CARRINHO */
+.pagina-carrinho {
+  padding: 3rem;
+  font-family: 'Roboto', sans-serif;
+  max-width: 100%;
+}
+.pagina-carrinho h1 {
+  color: #003366;
+  font-size: xx-large;
+}
+.pagina-carrinho h2 {
+  font-weight: bold;
+  font-size: x-large;
+}
+.pagina-carrinho h3 {
+  font-weight: bold;
+  font-size: large;
+}
+.vazio{
+color: #003366;
+}
+.titulos {
+  display: flex;
+  gap: 25vw;
+  border-bottom: 2px solid #003366;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+  margin: 2vw 0 1.5vw 0;
+}
+.item-carrinho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 1rem;
+}
+.item-carrinho p{
+    color: #003366;
+}
+.item-carrinho h3{
+    color: #003366;
+}
+.coluna {
+  display: flex;
+}
+.coluna span {
+  font-weight: bold;
+}
+.coluna-qtd {
+  display: flex;
+  margin: 0 15vw 0 -19vw;
+  color: #003366;
+}
+.coluna-preco {
+  margin: 0 19vw 0 -19vw;
+}
+.imagem-livro-carrinho {
+  width: 100px;
+  height: auto;
+  border-radius: 4px;
+  margin-right: 6px;
+}
+.quantidade-area {
+  display: flex;
+  border: 2px solid black;
+  border-radius: 3px;
+  padding: 5px;
+}
+.quantidade-area span {
+  min-width: 30px;
+  text-align: center;
+  display: inline-block;
+  font-weight: bold;
+  font-size: 1rem;
+}
+.btn-quantidade {
+  border: none;
+  background-color: white;
+  cursor: pointer;
+}
+.btn-remover {
+  background-color: transparent;
+  color: #ff4d4d;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+.btn-remover:hover {
+  color: #d10000;
+}
+.btn-voltar {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: white;
+  color: black;
+  border: 2px solid black;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  margin-right: auto;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+}
+.total {
+  margin: 2vw 65vw 0 65vw;
+  border: solid 2px black;
+  border-radius: 5px;
+  padding: 10px 20px;
+  width: 400px;
+  list-style: none;
+  color: #000000;
+}
+.total li {
+  padding: 8px 0;
+}
+.total li.line {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid black;
+}
+.total li.totalDesconto {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid black;
+}
+.total strong {
+  font-size: large;
+  font-weight: bold;
+}
+.total button {
+  font-family: 'Roboto', sans-serif;
+  background-color: #003366;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  margin-top: 1.5rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
+  justify-content: center;
+}
+.total button:hover {
+  background-color: #003366;
+}
+.cupom input {
+  font-family: 'Roboto', sans-serif;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  outline: none;
+  font-size: 1rem;
+  width: 200px;
+  margin: 0 1vw 0 0;
+}
+.cupom button {
+  font-family: 'Roboto', sans-serif;
+  background-color: #003366;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  justify-content: center;
+}
+.cupom button:hover {
+  background-color: #003366;
 }
 
-.books button:hover {
-  background-color: #002244;
-}
-
+/*RODAPÉ*/
 .rodape {
-  margin: 10vw 0 0 0;
+  margin-top: 0;
   background-color: #003366;
   color: white;
   font-size: 14px;
+  font-family: 'Roboto', sans-serif;
 }
 .container-rodape {
   padding: 40px 10vw 20px;
@@ -564,17 +949,11 @@ nav ul li a {
 .icones {
   display: flex;
   gap: 10px;
-}
-.icones i {
   width: 20px;
   height: 20px;
-  background-color: white;
-  color: #003366;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 16px;
-  border-radius: 2px;
+}
+.icones span {
+  color: white;
 }
 .contatos {
   text-align: left;
@@ -589,7 +968,7 @@ nav ul li a {
   align-items: center;
   gap: 8px;
 }
-.contatos i {
+.contatos span {
   font-size: 14px;
   color: white;
 }
@@ -612,7 +991,7 @@ nav ul li a {
   height: 2px;
   background-color: rgba(218, 208, 224, 0.726);
   border: none;
-  margin: 20px 0; 
+  margin: 20px 0;
 }
 .copyright {
   text-align: center;
@@ -620,5 +999,4 @@ nav ul li a {
   font-size: 12px;
   color: rgba(218, 208, 224, 0.726);
 }
-
 </style>
