@@ -126,9 +126,7 @@ function diminuirQuantidade(item) {
 }
 
 const totalCarrinho = computed(() => {
-  return carrinho.value.reduce((total, item) => {
-    return total + item.preco * item.quantidade
-  }, 0)
+  return carrinho.value.reduce((acc, item) => acc + (item.preco * item.quantidade), 0)
 })
 
 const codigoCupom = ref('')
@@ -137,7 +135,7 @@ const mensagemCupom = ref('')
 
 function aplicarCupom() {
   const cupom = codigoCupom.value.toLowerCase()
-  if (cupom !== 'desconto10') {
+  if (cupom !== 'devweb10') {
     mensagemCupom.value = 'Cupom inválido.'
     return
   }
@@ -152,6 +150,7 @@ function aplicarCupom() {
 const totalComDesconto = computed(() => {
   return cupomAtivo.value ? totalCarrinho.value * 0.9 : totalCarrinho.value
 })
+
 
 function adicionarAosFavoritos(livro) {
   const existe = favoritos.value.find((item) => item.id === livro.id)
@@ -311,41 +310,41 @@ function removerDosFavoritos(id) {
                 <span class="fa-solid fa-trash-can"></span> Remover
             </button>
           </div>
-          <!--SUBTOTAL-->
+          <!-- SUBTOTAL -->
           <div class="coluna-preco">
-            <p>
-              <strong>R$ {{ (item.preco * item.quantidade).toFixed(2) }}</strong>
-            </p>
+          <p><strong>R$ {{ (item.preco * item.quantidade).toFixed(2) }}</strong></p>
           </div>
-        </div>
-        <button @click="paginaAtual = 'home'" class="btn-voltar">Voltar para loja</button>
-        <div class="cupom">
+          </div>
+          <button @click="paginaAtual = 'home'" class="btn-voltar">Voltar para loja</button>
+          <!-- CUPOM -->
+          <div class="cupom">
           <input type="text" v-model="codigoCupom" placeholder="Código do cupom" />
           <button @click="aplicarCupom">Inserir Cupom</button>
+          </div>
+          <p v-if="mensagemCupom">{{ mensagemCupom }}</p>
+          <!-- TOTAL-->
+          <ul class="total">
+            <li><strong>Total da Compra</strong></li>
+            <li class="line">
+              <p>Produtos:</p>
+              <p>R$ {{ totalCarrinho.toFixed(2) }}</p>
+            </li>
+            <li class="line">
+              <p>Frete:</p>
+              <p>Grátis</p>
+            </li>
+            <li class="totalDesconto">
+              <p>Total:</p>
+              <p>R$ {{ totalCarrinho.toFixed(2) }}</p>
+            </li>
+            <li class="totalDesconto" v-if="totalComDesconto < totalCarrinho">
+              <p>Total com desconto:</p>
+              <p>R$ {{ totalComDesconto.toFixed(2) }}</p>
+            </li>
+            <button>Ir para o pagamento</button>
+          </ul>
         </div>
-        <p v-if="mensagemCupom">{{ mensagemCupom }}</p>
-        <ul class="total">
-          <li><strong>Total da Compra</strong></li>
-          <li class="line">
-            <p>Produtos:</p>
-            <p>R${{ totalCarrinho.toFixed(2) }}</p>
-          </li>
-          <li class="line">
-            <p>Frete:</p>
-            <p>Grátis</p>
-          </li>
-          <li class="totalDesconto">
-            <p>Total:</p>
-            <p>R${{ totalCarrinho.toFixed(2) }}</p>
-          </li>
-          <li class="totalDesconto" v-if="totalComDesconto < totalCarrinho">
-            <p>Total com desconto:</p>
-            <p>R${{ totalComDesconto.toFixed(2) }}</p>
-          </li>
-          <button>Ir para o pagamento</button>
-        </ul>
-      </div>
-    </section>
+  </section>
     <!-- Favoritos -->
     <section class="favoritos" v-if="paginaAtual === 'favoritos'">
       <h2>Meus Favoritos</h2>
@@ -689,10 +688,13 @@ nav ul li a {
   text-align: justify;
 }
 .livro-preco {
-  margin: 8px 0 0 6.5vw;
+  margin: 8px 0;
   font-weight: bold;
-  text-align: left;
+  text-align: center;
+  color: #003366;
+  width: 100%;
 }
+
 .container h2{
     color: #003366;
 }
