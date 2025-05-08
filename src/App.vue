@@ -121,14 +121,12 @@ function diminuirQuantidade(item) {
   if (item.quantidade > 1) {
     item.quantidade -= 1
   } else {
-    removerDoCarrinho(item)
+    removerDoCarrinho(item.id)
   }
 }
 
 const totalCarrinho = computed(() => {
-  return carrinho.value.reduce((total, item) => {
-    return total + item.preco * item.quantidade
-  }, 0)
+  return carrinho.value.reduce((acc, item) => acc + (item.preco * item.quantidade), 0)
 })
 
 const codigoCupom = ref('')
@@ -137,7 +135,7 @@ const mensagemCupom = ref('')
 
 function aplicarCupom() {
   const cupom = codigoCupom.value.toLowerCase()
-  if (cupom !== 'desconto10') {
+  if (cupom !== 'devweb10') {
     mensagemCupom.value = 'Cupom inválido.'
     return
   }
@@ -153,6 +151,7 @@ const totalComDesconto = computed(() => {
   return cupomAtivo.value ? totalCarrinho.value * 0.9 : totalCarrinho.value
 })
 
+
 function adicionarAosFavoritos(livro) {
   const existe = favoritos.value.find((item) => item.id === livro.id)
   if (!existe) {
@@ -163,6 +162,7 @@ function adicionarAosFavoritos(livro) {
 function removerDosFavoritos(id) {
   favoritos.value = favoritos.value.filter((item) => item.id !== id)
 }
+
 </script>
 
 <template>
@@ -188,12 +188,14 @@ function removerDosFavoritos(id) {
         <li class="icon-com-barra">
           <a href="#" @click.prevent="paginaAtual = 'carrinho'">
             <span class="material-icons">shopping_cart</span>
+            <span v-if="carrinho.length" class="contador-carrinho">{{ carrinho.length }}</span>
           </a>
         </li>
         <li class="icon-com-barra">
-          <a href="#" @click.prevent="paginaAtual = 'favoritos'"
-            ><span class="material-icons">favorite</span></a
-          >
+          <a href="#" @click.prevent="paginaAtual = 'favoritos'">
+            <span class="material-icons">favorite</span>
+            <span v-if="favoritos.length" class="contador-favoritos">{{ favoritos.length }}</span>
+          </a>
         </li>
         <li>
           <a href="#perfil"><span class="material-icons">person</span></a>
@@ -216,7 +218,7 @@ function removerDosFavoritos(id) {
             Stephenie Meyer é a autora da série Crepúsculo, que vendeu mais de 100 milhões de cópias
             em mais de 50 países e foi traduzida para 37 línguas.
           </p>
-          <button @click="adicionarAoCarrinho(livros[0])">Acessar página do livro</button>
+          <button @click="adicionarAoCarrinho(livros[0])">Adicionar livro ao carrinho</button>
         </div>
         <div class="img">
           <img
@@ -256,9 +258,12 @@ function removerDosFavoritos(id) {
               <p class="livro-autor">{{ livro.autor }}</p>
               <div class="preco-favorito">
                 <p class="livro-preco">R$ {{ livro.preco }}</p>
-                <span class="icone-coracao" @click="adicionarAosFavoritos(livro)"
-                  ><span class="far fa-heart"></span
-                ></span>
+                <span 
+                    class="icone-coracao"
+                    :class="{'heart-filled': favoritos.some(item => item.id === livro.id)}"
+                    @click="adicionarAosFavoritos(livro)">
+              <span class="far fa-heart" :class="{'fa-solid': favoritos.some(item => item.id === livro.id)}"></span>
+              </span>
               </div>
               <div class="acoes">
                 <button class="btn-comprar" @click="adicionarAoCarrinho(livro)">
@@ -275,7 +280,7 @@ function removerDosFavoritos(id) {
       <h1>Carrinho</h1>
       <div v-if="carrinho.length === 0">
         <p class= "vazio" >Seu carrinho está vazio.</p>
-        <button @click="paginaAtual = 'home'" class="btn-voltar">Voltar</button>
+        <button @click="paginaAtual = 'home'" class="btn-voltar">Voltar para a loja</button>
       </div>
 
       <div v-else>
@@ -308,41 +313,41 @@ function removerDosFavoritos(id) {
                 <span class="fa-solid fa-trash-can"></span> Remover
             </button>
           </div>
-          <!--SUBTOTAL-->
+          <!-- SUBTOTAL -->
           <div class="coluna-preco">
-            <p>
-              <strong>R$ {{ (item.preco * item.quantidade).toFixed(2) }}</strong>
-            </p>
+          <p><strong>R$ {{ (item.preco * item.quantidade).toFixed(2) }}</strong></p>
           </div>
-        </div>
-        <button @click="paginaAtual = 'home'" class="btn-voltar">Voltar para loja</button>
-        <div class="cupom">
+          </div>
+          <button @click="paginaAtual = 'home'" class="btn-voltar">Voltar para loja</button>
+          <!-- CUPOM -->
+          <div class="cupom">
           <input type="text" v-model="codigoCupom" placeholder="Código do cupom" />
           <button @click="aplicarCupom">Inserir Cupom</button>
+          </div>
+          <p v-if="mensagemCupom">{{ mensagemCupom }}</p>
+          <!-- TOTAL-->
+          <ul class="total">
+            <li><strong>Total da Compra</strong></li>
+            <li class="line">
+              <p>Produtos:</p>
+              <p>R$ {{ totalCarrinho.toFixed(2) }}</p>
+            </li>
+            <li class="line">
+              <p>Frete:</p>
+              <p>Grátis</p>
+            </li>
+            <li class="totalDesconto">
+              <p>Total:</p>
+              <p>R$ {{ totalCarrinho.toFixed(2) }}</p>
+            </li>
+            <li class="totalDesconto" v-if="totalComDesconto < totalCarrinho">
+              <p>Total com desconto:</p>
+              <p>R$ {{ totalComDesconto.toFixed(2) }}</p>
+            </li>
+            <button>Ir para o pagamento</button>
+          </ul>
         </div>
-        <p v-if="mensagemCupom">{{ mensagemCupom }}</p>
-        <ul class="total">
-          <li><strong>Total da Compra</strong></li>
-          <li class="line">
-            <p>Produtos:</p>
-            <p>R${{ totalCarrinho.toFixed(2) }}</p>
-          </li>
-          <li class="line">
-            <p>Frete:</p>
-            <p>Grátis</p>
-          </li>
-          <li class="totalDesconto">
-            <p>Total:</p>
-            <p>R${{ totalCarrinho.toFixed(2) }}</p>
-          </li>
-          <li class="totalDesconto" v-if="totalComDesconto < totalCarrinho">
-            <p>Total com desconto:</p>
-            <p>R${{ totalComDesconto.toFixed(2) }}</p>
-          </li>
-          <button>Ir para o pagamento</button>
-        </ul>
-      </div>
-    </section>
+  </section>
     <!-- Favoritos -->
     <section class="favoritos" v-if="paginaAtual === 'favoritos'">
       <h2>Meus Favoritos</h2>
@@ -356,7 +361,7 @@ function removerDosFavoritos(id) {
           <button @click="removerDosFavoritos(livro.id)" class="btn-remove">Remover dos Favoritos</button>
         </li>
       </ul>
-      <button @click="paginaAtual = 'home'" class="btn-voltar">Voltar</button>
+      <button @click="paginaAtual = 'home'" class="btn-voltar">Voltar para a loja</button>
     </section>
   </main>
   <!--RODAPÉ-->
@@ -372,7 +377,7 @@ function removerDosFavoritos(id) {
       </div>
       <div class="contatos">
         <p>Contatos</p>
-        <p><span class="fas fa-phone-alt"></span> +55 47 99999-9999</p>
+        <p><span class="fas fa-phone-alt"></span> +55 47 40045263</p>
         <p><span class="fas fa-envelope"></span> beckandbooks@gmail.com</p>
         <div class="pagamento">
           <img src="https://i.ibb.co/ccfhYRbJ/paipal-1.png" alt="PayPal" class="icone-cartao" />
@@ -390,49 +395,11 @@ function removerDosFavoritos(id) {
       </div>
     </div>
     <hr class="linha-divisoria" />
-    <p class="copyright">©️ Alguns direitos reservados | IFBooks 2025</p>
+    <p class="copyright">&copy; Alguns direitos reservados | BeckAnd books 2025</p>
   </footer>
 </template>
 
 <style scoped>
-/* Favoritos */
-.favoritos h2 {
-  font-size: 35px;
-  color: #003366;
-  margin: 0 0 0 5vw;
-}
-
-.favoritos p {
-  margin: 0 0 0 5vw;
-}
-.favoritos{
-    color: #003366;
-}
-.favoritos ul {
-  display: flex;
-  align-items: center;
-  margin: 2vw 0 0 0;
-}
-.favoritos ul li {
-  list-style: none;
-  margin: 0px 0 0 30px;
-}
-.btn-voltar{
-    margin: 2px 0 0 5vw;
-}
-.btn-remove{
-  background-color: #003366;
-  color: white;
-  border: none;
-  padding: 8px 20px;
-  margin: 0.5vw 0 0 0;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 /*MENU*/
 header {
   font-family: 'Roboto', sans-serif;
@@ -441,7 +408,7 @@ header {
 
 main{
     background-color: #fff;
-    min-height: calc(100vh - 200px); /* ajuste 200px conforme a altura do header e footer */
+    min-height: calc(100vh - 200px);
 }
 .icon-com-barra {
   position: relative;
@@ -558,6 +525,26 @@ nav ul li a {
   background-color: #003366;
   margin-top: 15px;
 }
+.contador-carrinho {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: white;
+  color: #003366;
+  border-radius: 50%;
+  padding: 0 6px;
+  font-size: 12px;
+}
+.contador-favoritos {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: white;
+  color: #003366;
+  border-radius: 50%;
+  padding: 0 6px;
+  font-size: 12px;
+}
 
 /*AUTOR-ABRIL*/
 .autor-abril {
@@ -634,7 +621,7 @@ nav ul li a {
   text-align: right;
 }
 
-/*CONTEÚDO E LANÇAMENTOS*/
+/*CONTEÚDO*/
 .livros-section {
   background-color: #fff;
   font-family: 'Roboto', sans-serif;
@@ -704,10 +691,13 @@ nav ul li a {
   text-align: justify;
 }
 .livro-preco {
-  margin: 8px 0 0 6.5vw;
+  margin: 8px 0;
   font-weight: bold;
-  text-align: left;
+  text-align: center;
+  color: #003366;
+  width: 100%;
 }
+
 .container h2{
     color: #003366;
 }
@@ -720,6 +710,7 @@ nav ul li a {
 .livro-preco{
     color: #003366;
 }
+
 .acoes {
   display: flex;
   justify-content: center;
@@ -747,9 +738,28 @@ nav ul li a {
   background-color: #003366;
 }
 .icone-coracao {
-  font-size: 18px;
+  background-color: white;
   color: #003366;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
+
+.heart-filled {
+  color: red; 
+}
+
+.fa-heart {
+  color: gray;
+}
+
+.fa-solid {
+  color: red; 
+}
+
 /* CARRINHO */
 .pagina-carrinho {
   padding: 3rem;
@@ -923,6 +933,50 @@ color: #003366;
 }
 .cupom button:hover {
   background-color: #003366;
+}
+
+/* FAVORITOS */
+.favoritos h2 {
+  font-size: 35px;
+  color: #003366;
+  margin: 0 0 0 5vw;
+}
+
+.favoritos p {
+  margin: 0 0 0 5vw;
+}
+.favoritos{
+    color: #003366;
+}
+.favoritos ul {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin: 2vw 5vw;
+  padding: 0;
+}
+
+.favoritos ul li {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.btn-voltar{
+    margin: 2px 0 0 5vw;
+}
+.btn-remove{
+  background-color: #003366;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  margin: 0.5vw 0 0 0;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /*RODAPÉ*/
