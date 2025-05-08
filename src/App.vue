@@ -84,7 +84,7 @@ const livros = [
     autor: 'Penelope Douglas',
     preco: 89.99,
   },
-  {
+  { 
     id: 12,
     imagem: 'https://m.media-amazon.com/images/I/71QbHTPna7L._UF894,1000_QL80_.jpg',
     titulo: 'Nightfall',
