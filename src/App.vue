@@ -218,7 +218,7 @@ function removerDosFavoritos(id) {
             Stephenie Meyer é a autora da série Crepúsculo, que vendeu mais de 100 milhões de cópias
             em mais de 50 países e foi traduzida para 37 línguas.
           </p>
-          <button @click="adicionarAoCarrinho(livros[0])">Acessar página do livro</button>
+          <button @click="adicionarAoCarrinho(livros[0])">Adicionar livro ao carrinho</button>
         </div>
         <div class="img">
           <img
@@ -258,9 +258,9 @@ function removerDosFavoritos(id) {
               <p class="livro-autor">{{ livro.autor }}</p>
               <div class="preco-favorito">
                 <p class="livro-preco">R$ {{ livro.preco }}</p>
-                <span class="icone-coracao" @click="adicionarAosFavoritos(livro)">
+                <button class="icone-coracao" @click="adicionarAosFavoritos(livro)">
                   <span class="far fa-heart"></span>
-                </span>
+                </button>
               </div>
               <div class="acoes">
                 <button class="btn-comprar" @click="adicionarAoCarrinho(livro)">
@@ -374,7 +374,7 @@ function removerDosFavoritos(id) {
       </div>
       <div class="contatos">
         <p>Contatos</p>
-        <p><span class="fas fa-phone-alt"></span> +55 47 99999-9999</p>
+        <p><span class="fas fa-phone-alt"></span> +55 47 40045263</p>
         <p><span class="fas fa-envelope"></span> beckandbooks@gmail.com</p>
         <div class="pagamento">
           <img src="https://i.ibb.co/ccfhYRbJ/paipal-1.png" alt="PayPal" class="icone-cartao" />
@@ -733,6 +733,16 @@ nav ul li a {
 }
 .btn-comprar:hover {
   background-color: #003366;
+}
+.icone-coracao {
+  background-color: white;
+  color: #003366;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* CARRINHO */
