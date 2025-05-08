@@ -126,9 +126,7 @@ function diminuirQuantidade(item) {
 }
 
 const totalCarrinho = computed(() => {
-  return carrinho.value.reduce((total, item) => {
-    return total + item.preco * item.quantidade
-  }, 0)
+  return carrinho.value.reduce((acc, item) => acc + (item.preco * item.quantidade), 0)
 })
 
 const codigoCupom = ref('')
@@ -137,7 +135,7 @@ const mensagemCupom = ref('')
 
 function aplicarCupom() {
   const cupom = codigoCupom.value.toLowerCase()
-  if (cupom !== 'desconto10') {
+  if (cupom !== 'devweb10') {
     mensagemCupom.value = 'Cupom inválido.'
     return
   }
@@ -152,6 +150,7 @@ function aplicarCupom() {
 const totalComDesconto = computed(() => {
   return cupomAtivo.value ? totalCarrinho.value * 0.9 : totalCarrinho.value
 })
+
 
 function adicionarAosFavoritos(livro) {
   const existe = favoritos.value.find((item) => item.id === livro.id)
@@ -219,7 +218,7 @@ function removerDosFavoritos(id) {
             Stephenie Meyer é a autora da série Crepúsculo, que vendeu mais de 100 milhões de cópias
             em mais de 50 países e foi traduzida para 37 línguas.
           </p>
-          <button @click="adicionarAoCarrinho(livros[0])">Acessar página do livro</button>
+          <button @click="adicionarAoCarrinho(livros[0])">Adicionar livro ao carrinho</button>
         </div>
         <div class="img">
           <img
@@ -259,9 +258,9 @@ function removerDosFavoritos(id) {
               <p class="livro-autor">{{ livro.autor }}</p>
               <div class="preco-favorito">
                 <p class="livro-preco">R$ {{ livro.preco }}</p>
-                <span class="icone-coracao" @click="adicionarAosFavoritos(livro)">
+                <button class="icone-coracao" @click="adicionarAosFavoritos(livro)">
                   <span class="far fa-heart"></span>
-                </span>
+                </button>
               </div>
               <div class="acoes">
                 <button class="btn-comprar" @click="adicionarAoCarrinho(livro)">
@@ -311,41 +310,41 @@ function removerDosFavoritos(id) {
                 <span class="fa-solid fa-trash-can"></span> Remover
             </button>
           </div>
-          <!--SUBTOTAL-->
+          <!-- SUBTOTAL -->
           <div class="coluna-preco">
-            <p>
-              <strong>R$ {{ (item.preco * item.quantidade).toFixed(2) }}</strong>
-            </p>
+          <p><strong>R$ {{ (item.preco * item.quantidade).toFixed(2) }}</strong></p>
           </div>
-        </div>
-        <button @click="paginaAtual = 'home'" class="btn-voltar">Voltar para loja</button>
-        <div class="cupom">
+          </div>
+          <button @click="paginaAtual = 'home'" class="btn-voltar">Voltar para loja</button>
+          <!-- CUPOM -->
+          <div class="cupom">
           <input type="text" v-model="codigoCupom" placeholder="Código do cupom" />
           <button @click="aplicarCupom">Inserir Cupom</button>
+          </div>
+          <p v-if="mensagemCupom">{{ mensagemCupom }}</p>
+          <!-- TOTAL-->
+          <ul class="total">
+            <li><strong>Total da Compra</strong></li>
+            <li class="line">
+              <p>Produtos:</p>
+              <p>R$ {{ totalCarrinho.toFixed(2) }}</p>
+            </li>
+            <li class="line">
+              <p>Frete:</p>
+              <p>Grátis</p>
+            </li>
+            <li class="totalDesconto">
+              <p>Total:</p>
+              <p>R$ {{ totalCarrinho.toFixed(2) }}</p>
+            </li>
+            <li class="totalDesconto" v-if="totalComDesconto < totalCarrinho">
+              <p>Total com desconto:</p>
+              <p>R$ {{ totalComDesconto.toFixed(2) }}</p>
+            </li>
+            <button>Ir para o pagamento</button>
+          </ul>
         </div>
-        <p v-if="mensagemCupom">{{ mensagemCupom }}</p>
-        <ul class="total">
-          <li><strong>Total da Compra</strong></li>
-          <li class="line">
-            <p>Produtos:</p>
-            <p>R${{ totalCarrinho.toFixed(2) }}</p>
-          </li>
-          <li class="line">
-            <p>Frete:</p>
-            <p>Grátis</p>
-          </li>
-          <li class="totalDesconto">
-            <p>Total:</p>
-            <p>R${{ totalCarrinho.toFixed(2) }}</p>
-          </li>
-          <li class="totalDesconto" v-if="totalComDesconto < totalCarrinho">
-            <p>Total com desconto:</p>
-            <p>R${{ totalComDesconto.toFixed(2) }}</p>
-          </li>
-          <button>Ir para o pagamento</button>
-        </ul>
-      </div>
-    </section>
+  </section>
     <!-- Favoritos -->
     <section class="favoritos" v-if="paginaAtual === 'favoritos'">
       <h2>Meus Favoritos</h2>
@@ -375,7 +374,7 @@ function removerDosFavoritos(id) {
       </div>
       <div class="contatos">
         <p>Contatos</p>
-        <p><span class="fas fa-phone-alt"></span> +55 47 99999-9999</p>
+        <p><span class="fas fa-phone-alt"></span> +55 47 40045263</p>
         <p><span class="fas fa-envelope"></span> beckandbooks@gmail.com</p>
         <div class="pagamento">
           <img src="https://i.ibb.co/ccfhYRbJ/paipal-1.png" alt="PayPal" class="icone-cartao" />
@@ -689,10 +688,13 @@ nav ul li a {
   text-align: justify;
 }
 .livro-preco {
-  margin: 8px 0 0 6.5vw;
+  margin: 8px 0;
   font-weight: bold;
-  text-align: left;
+  text-align: center;
+  color: #003366;
+  width: 100%;
 }
+
 .container h2{
     color: #003366;
 }
@@ -731,6 +733,16 @@ nav ul li a {
 }
 .btn-comprar:hover {
   background-color: #003366;
+}
+.icone-coracao {
+  background-color: white;
+  color: #003366;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* CARRINHO */
