@@ -258,9 +258,12 @@ function removerDosFavoritos(id) {
               <p class="livro-autor">{{ livro.autor }}</p>
               <div class="preco-favorito">
                 <p class="livro-preco">R$ {{ livro.preco }}</p>
-                <button class="icone-coracao" @click="adicionarAosFavoritos(livro)">
-                  <span class="far fa-heart"></span>
-                </button>
+                <span 
+                    class="icone-coracao"
+                    :class="{'heart-filled': favoritos.some(item => item.id === livro.id)}"
+                    @click="adicionarAosFavoritos(livro)">
+              <span class="far fa-heart" :class="{'fa-solid': favoritos.some(item => item.id === livro.id)}"></span>
+              </span>
               </div>
               <div class="acoes">
                 <button class="btn-comprar" @click="adicionarAoCarrinho(livro)">
@@ -743,6 +746,18 @@ nav ul li a {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.heart-filled {
+  color: red; 
+}
+
+.fa-heart {
+  color: gray;
+}
+
+.fa-solid {
+  color: red; 
 }
 
 /* CARRINHO */
